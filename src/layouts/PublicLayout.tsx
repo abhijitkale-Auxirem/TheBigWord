@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
-import { Globe, Twitter, Linkedin, Youtube, Instagram, ArrowRight } from 'lucide-react';
+import { Globe, Twitter, Linkedin, Youtube, Instagram, ArrowRight, Mail, MapPin, Phone, Sparkles } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
 
 interface PublicLayoutProps {
@@ -10,11 +10,20 @@ interface PublicLayoutProps {
 
 const FOOTER_LINKS = {
   Platform: [
-    { label: 'Features', href: '/#features' },
-    { label: 'Courses', href: ROUTES.LEARNER_COURSES },
-    { label: 'Certifications', href: '/#certs' },
-    { label: 'Tutor Marketplace', href: '/#tutors' },
-    { label: 'Pricing', href: '/#pricing' },
+    { label: 'AI Vocabulary Builder', href: ROUTES.SIGNUP },
+    { label: 'AI Conversation Coach', href: ROUTES.SIGNUP },
+    { label: 'Translation Platform', href: ROUTES.SIGNUP },
+    { label: 'Certification Center', href: ROUTES.SIGNUP },
+    { label: 'Tutor Marketplace', href: ROUTES.SIGNUP },
+    { label: 'Writing Studio', href: ROUTES.SIGNUP },
+  ],
+  Learn: [
+    { label: 'English', href: ROUTES.SIGNUP },
+    { label: 'Spanish', href: ROUTES.SIGNUP },
+    { label: 'French', href: ROUTES.SIGNUP },
+    { label: 'Mandarin', href: ROUTES.SIGNUP },
+    { label: 'Arabic', href: ROUTES.SIGNUP },
+    { label: 'View all 50+', href: ROUTES.SIGNUP },
   ],
   Company: [
     { label: 'About Us', href: '#' },
@@ -22,17 +31,30 @@ const FOOTER_LINKS = {
     { label: 'Careers', href: ROUTES.CAREERS },
     { label: 'Press', href: ROUTES.PRESS },
     { label: 'Contact', href: ROUTES.CONTACT },
+    { label: 'Partners', href: '#' },
   ],
   Support: [
     { label: 'Help Center', href: ROUTES.HELP_CENTER },
     { label: 'Documentation', href: ROUTES.DOCUMENTATION },
-    { label: 'Community', href: '#' },
+    { label: 'Community Forum', href: '#' },
     { label: 'Privacy Policy', href: '#' },
     { label: 'Terms of Service', href: '#' },
+    { label: 'Cookie Settings', href: '#' },
   ],
 };
 
-const LANGUAGES_MARQUEE = ['English', 'Español', 'Français', 'Deutsch', '中文', 'العربية', 'हिंदी', '日本語', 'Português', 'Italiano', 'Русский', 'Korean', 'Dutch', 'Turkish', 'Polish'];
+const SOCIAL_LINKS = [
+  { Icon: Twitter, label: 'Twitter', href: '#', color: '#1d9bf0' },
+  { Icon: Linkedin, label: 'LinkedIn', href: '#', color: '#0a66c2' },
+  { Icon: Youtube, label: 'YouTube', href: '#', color: '#ff0000' },
+  { Icon: Instagram, label: 'Instagram', href: '#', color: '#e1306c' },
+];
+
+const LANGUAGES_MARQUEE = [
+  'English', 'Español', 'Français', 'Deutsch', '中文', 'العربية',
+  'हिंदी', '日本語', 'Português', 'Italiano', 'Русский', '한국어',
+  'Nederlands', 'Türkçe', 'Polski', 'Tiếng Việt', 'ภาษาไทย', 'Bahasa',
+];
 
 const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
   return (
@@ -40,65 +62,110 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
       <Navbar />
       <main className="pt-16">{children}</main>
 
-      {/* Language Marquee */}
-      <div className="bg-brand-surface border-y border-border py-4 overflow-hidden">
-        <div className="flex gap-8 animate-marquee whitespace-nowrap">
+      {/* ── Language Marquee ── */}
+      <div className="marquee-strip">
+        <div className="marquee-track">
           {[...LANGUAGES_MARQUEE, ...LANGUAGES_MARQUEE].map((lang, i) => (
-            <div key={i} className="flex items-center gap-3 text-sm font-medium text-muted-foreground flex-shrink-0">
-              <Globe className="w-4 h-4 text-primary/50" />
+            <div key={i} className="marquee-item">
+              <Globe className="w-3.5 h-3.5 text-primary/40" />
               <span>{lang}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="bg-foreground text-background pt-16 pb-8">
+      {/* ── Footer ── */}
+      <footer className="footer-root">
+        {/* Top glow line */}
+        <div className="footer-glow-line" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Top CTA band */}
-          <div className="gradient-primary rounded-2xl p-8 mb-14 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-            <div className="absolute right-0 top-0 w-48 h-48 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
-            <div className="relative z-10">
-              <h3 className="font-heading font-bold text-2xl text-white mb-1">Ready to master a new language?</h3>
-              <p className="text-blue-100/80 text-sm">Join 500,000+ learners on TheBigWord today.</p>
+
+          {/* Newsletter / CTA Band */}
+          <div className="footer-cta-band">
+            <div className="footer-cta-orb footer-cta-orb-1" />
+            <div className="footer-cta-orb footer-cta-orb-2" />
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                  <span className="text-blue-200 text-sm font-medium uppercase tracking-widest">Newsletter</span>
+                </div>
+                <h3 className="font-heading font-bold text-2xl text-white mb-1">Stay ahead in language learning</h3>
+                <p className="text-blue-200/70 text-sm">Weekly tips, new feature drops, and learner success stories.</p>
+              </div>
+              <form className="footer-newsletter-form" onSubmit={e => e.preventDefault()}>
+                <div className="footer-newsletter-input-wrap">
+                  <Mail className="footer-newsletter-icon" />
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="footer-newsletter-input"
+                    aria-label="Email for newsletter"
+                  />
+                </div>
+                <button type="submit" className="footer-newsletter-btn">
+                  Subscribe <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
             </div>
-            <Link
-              to={ROUTES.SIGNUP}
-              className="relative z-10 flex items-center gap-2 bg-white text-primary font-semibold text-sm px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors shadow-lg flex-shrink-0"
-            >
-              Get Started Free <ArrowRight className="w-4 h-4" />
-            </Link>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-12">
-            {/* Brand */}
+          {/* Main Footer Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-10 py-16">
+            {/* Brand Column */}
             <div className="col-span-2 md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-9 h-9 gradient-primary rounded-xl flex items-center justify-center">
+              <Link to={ROUTES.HOME} className="flex items-center gap-2.5 mb-5 group">
+                <div className="footer-logo-icon">
                   <Globe className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-heading font-bold text-xl text-white">TheBigWord</span>
-              </div>
-              <p className="text-sm text-gray-400 leading-relaxed mb-6 max-w-xs">
+              </Link>
+              <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-xs">
                 AI-powered language learning & communication platform for global mastery. Speak every language, fluently.
               </p>
-              <div className="flex items-center gap-3">
-                {[Twitter, Linkedin, Youtube, Instagram].map((Icon, i) => (
-                  <a key={i} href="#" className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all">
+
+              {/* Contact Info */}
+              <div className="space-y-2.5 mb-6">
+                {[
+                  { Icon: Mail, text: 'hello@thebigword.ai' },
+                  { Icon: Phone, text: '+1 (555) 000-1234' },
+                  { Icon: MapPin, text: 'San Francisco, CA, USA' },
+                ].map(({ Icon, text }) => (
+                  <div key={text} className="flex items-center gap-2.5 text-slate-400 text-xs">
+                    <Icon className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Social Links */}
+              <div className="flex items-center gap-2">
+                {SOCIAL_LINKS.map(({ Icon, label, href, color }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    className="footer-social-btn group"
+                    style={{ '--social-color': color } as React.CSSProperties}
+                  >
                     <Icon className="w-4 h-4" />
                   </a>
                 ))}
               </div>
             </div>
 
-            {/* Link groups */}
+            {/* Link columns */}
             {Object.entries(FOOTER_LINKS).map(([title, links]) => (
-              <div key={title}>
-                <h4 className="font-semibold text-white mb-4 text-sm">{title}</h4>
+              <div key={title} className="col-span-1">
+                <h4 className="footer-col-title">{title}</h4>
                 <ul className="space-y-2.5">
                   {links.map(link => (
                     <li key={link.label}>
-                      <Link to={link.href} className="text-sm text-gray-400 hover:text-white transition-colors">
+                      <Link
+                        to={link.href}
+                        className="footer-link"
+                      >
                         {link.label}
                       </Link>
                     </li>
@@ -108,12 +175,24 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
             ))}
           </div>
 
-          <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500">© 2026 TheBigWord Inc. All rights reserved.</p>
-            <div className="flex items-center gap-4 text-xs text-gray-500">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+          {/* Bottom bar */}
+          <div className="footer-bottom">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <p className="text-sm text-slate-500">
+                © 2026 TheBigWord Inc. All rights reserved.
+              </p>
+              <div className="flex items-center gap-1 text-xs text-slate-500">
+                <span>Made with</span>
+                <span className="text-red-400 animate-pulse-slow">♥</span>
+                <span>for language learners worldwide</span>
+              </div>
+              <div className="flex items-center gap-4 text-xs text-slate-500">
+                <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                <span className="w-px h-3 bg-slate-700" />
+                <a href="#" className="hover:text-white transition-colors">Terms</a>
+                <span className="w-px h-3 bg-slate-700" />
+                <a href="#" className="hover:text-white transition-colors">Cookies</a>
+              </div>
             </div>
           </div>
         </div>
