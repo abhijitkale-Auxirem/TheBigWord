@@ -5,12 +5,53 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
+
+  // Common
   avatar?: string;
-  language?: string;
-  proficiencyLevel?: string;
+  avatarUrl?: string;
+  bio?: string;
   joinDate?: string;
   streak?: number;
   points?: number;
+
+  // Learner
+  language?: string;
+  proficiencyLevel?: string;
+  targetLanguage?: string;
+  nativeLanguage?: string;
+  learningGoal?: string;
+  weeklyGoal?: string;
+
+  // Tutor
+  headline?: string;
+  languages?: string[];
+  specialties?: string[];
+  rate?: string;
+  education?: string;
+  certifications?: string;
+
+  // Translator
+  langPairs?: string[];
+  domains?: string[];
+  yearsExp?: string;
+  translatorCerts?: string[];
+
+  // Corporate
+  companyName?: string;
+  industry?: string;
+  companySize?: string;
+  country?: string;
+  website?: string;
+  contactName?: string;
+  description?: string;
+  vatNumber?: string;
+
+  // Admin
+  department?: string;
+  phone?: string;
+
+  // Settings (persisted globally)
+  settings?: Record<string, unknown>;
 }
 
 export interface AuthState {

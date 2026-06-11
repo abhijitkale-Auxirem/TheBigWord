@@ -12,7 +12,7 @@ const COMMUNITIES = [
 const POSTS = [
   { id: '1', user: 'Priya S.', avatar: 'P', community: '🇪🇸 Spanish', time: '10 min ago', content: 'Just had my first full conversation in Spanish with a native speaker! Cannot believe how far I have come in 3 months. TheBigWord vocabulary builder was a huge help!', likes: 47, comments: 12, liked: false },
   { id: '2', user: 'Carlos M.', avatar: 'C', community: '🇬🇧 English', time: '1 hour ago', content: 'Quick grammar question: Is it "I have been working here for 5 years" or "I am working here for 5 years"? The present perfect always trips me up!', likes: 23, comments: 31, liked: false },
-  { id: '3', user: 'Yuki T.', avatar: 'Y', community: '🎓 IELTS Prep', time: '3 hours ago', content: 'Scored Band 8 on my IELTS exam today! The mock tests here were almost identical to the real thing. So grateful for this community\'s support!', likes: 128, comments: 45, liked: true },
+  { id: '3', user: 'Yuki T.', avatar: 'Y', community: ' IELTS Prep', time: '3 hours ago', content: 'Scored Band 8 on my IELTS exam today! The mock tests here were almost identical to the real thing. So grateful for this community\'s support!', likes: 128, comments: 45, liked: true },
 ];
 
 const CommunityExchange: React.FC = () => {
@@ -38,11 +38,7 @@ const CommunityExchange: React.FC = () => {
                   rows={3}
                   className="w-full border border-border rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none placeholder:text-muted-foreground" />
                 <div className="flex items-center justify-between mt-3">
-                  <div className="flex gap-2">
-                    {['🇪🇸', '🇫🇷', '🇨🇳', '🎓'].map(e => (
-                      <button key={e} className="text-lg hover:scale-125 transition-transform">{e}</button>
-                    ))}
-                  </div>
+                 
                   <button disabled={!newPost.trim()}
                     className="gradient-primary text-white text-sm font-semibold px-5 py-2 rounded-xl hover:opacity-90 disabled:opacity-40 transition-all shadow-lg shadow-primary/20">
                     Post to Community

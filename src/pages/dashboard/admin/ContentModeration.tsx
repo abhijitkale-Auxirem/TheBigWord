@@ -43,44 +43,38 @@ const ContentModeration: React.FC = () => {
         ))}
       </div>
 
-      <div className="space-y-4 stagger-children">
-        {REPORTS.filter(r => activeTab === 'pending' ? r.status !== 'resolved' : r.status === activeTab).map(report => (
-          <div key={report.id} className="bg-white rounded-2xl border border-border p-5 hover:shadow-lg transition-all">
-            <div className="flex items-start justify-between gap-4 mb-3">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Flag className="w-4 h-4 text-red-500" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-sm">{report.type}</span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${severityColors[report.severity]}`}>{report.severity}</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{report.content}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Reported by: {report.user} · {report.reported}</p>
-                </div>
-              </div>
-              {report.status !== 'resolved' && (
-                <div className="flex gap-2 flex-shrink-0">
-                  <button className="p-2 rounded-xl border border-border hover:border-emerald-300 text-muted-foreground hover:text-emerald-500 transition-all">
-                    <CheckCircle className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 rounded-xl border border-border hover:border-red-300 text-muted-foreground hover:text-red-500 transition-all">
-                    <XCircle className="w-4 h-4" />
-                  </button>
-                  <button className="p-2 rounded-xl border border-border text-muted-foreground hover:text-primary transition-all">
-                    <Eye className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
-              {report.status === 'resolved' && (
-                <span className="text-xs bg-emerald-50 text-emerald-600 px-2.5 py-1.5 rounded-xl font-medium flex items-center gap-1">
-                  <CheckCircle className="w-3 h-3" /> Resolved
-                </span>
-              )}
-            </div>
-          </div>
-        ))}
+      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
+            <thead>
+            
+            </thead>
+            <tbody>
+              {displayed.map(report => (
+                <tr key={report.id} className="border-b border-border/50 last:border-0 hover:bg-brand-surface/30 transition-colors">
+                  <td className="px-5 py-4 font-medium text-sm whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Flag className="w-4 h-4 text-red-500" />
+                      <span>{report.type}</span>
+                    </div>
+                  </td>
+                  <td className="px-5 py-4 text-sm text-slate-700 max-w-[320px] truncate" title={report.content}>{report.content}</td>
+                  <td className="px-5 py-4 text-sm text-muted-foreground whitespace-nowrap">{report.user}</td>
+                  <td className="px-5 py-4 text-sm text-muted-foreground whitespace-nowrap">{report.reported}</td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${severityColors[report.severity]}`}>{report.severity}</span>
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${report.status === 'resolved' ? 'bg-emerald-50 text-emerald-600' : report.status === 'under-review' ? 'bg-blue-50 text-blue-600' : 'bg-yellow-50 text-yellow-600'}`}>
+                      {report.status.replace('-', ' ')}
+                    </span>
+                  </td>
+                  
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </DashboardLayout>
   );

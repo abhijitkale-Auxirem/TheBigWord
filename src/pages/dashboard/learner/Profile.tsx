@@ -1,6 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import { User, Camera, Globe, Target, BookOpen, Edit3, Save, X } from 'lucide-react';
+import { 
+  User, 
+  Camera, 
+  Globe, 
+  Target, 
+  BookOpen, 
+  Edit3, 
+  Save, 
+  X,
+  Flame,
+  Award,
+  CalendarDays
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,94 +23,213 @@ const LANGUAGES = ['English', 'Spanish', 'French', 'German', 'Mandarin', 'Arabic
 const LEVELS = ['Beginner', 'Elementary', 'Intermediate', 'Upper-Intermediate', 'Advanced', 'Proficient'];
 const GOALS = ['Career Advancement', 'Academic Study', 'Travel', 'Business Communication', 'Personal Interest', 'Exam Preparation'];
 
+interface FormState {
+  name: string;
+  email: string;
+  targetLanguage: string;
+  nativeLanguage: string;
+  proficiencyLevel: string;
+  learningGoal: string;
+  weeklyGoal: string;
+  bio: string;
+}
+
 const LearnerProfile: React.FC = () => {
-  const { user } = useAuthContext();
-  const [editing, setEditing] = useState(false);
-  const [form, setForm] = useState({
+  const { user, updateUser } = useAuthContext();
+  const [editing, setEditing] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  const [form, setForm] = useState<FormState>({
     name: user?.name || '',
     email: user?.email || '',
-    targetLanguage: 'Spanish',
-    nativeLanguage: 'English',
-    proficiencyLevel: 'Intermediate',
-    learningGoal: 'Career Advancement',
-    weeklyGoal: '20',
-    bio: 'Passionate language learner focused on Spanish and Business English.',
+    targetLanguage: user?.targetLanguage || 'Spanish',
+    nativeLanguage: user?.nativeLanguage || 'English',
+    proficiencyLevel: user?.proficiencyLevel || 'Intermediate',
+    learningGoal: user?.learningGoal || 'Career Advancement',
+    weeklyGoal: user?.weeklyGoal || '20',
+    bio: user?.bio || 'Passionate language learner focused on Spanish and Business English.',
   });
 
-  const handleSave = () => {
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name || '',
+        email: user.email || '',
+        targetLanguage: user.targetLanguage || 'Spanish',
+        nativeLanguage: user.nativeLanguage || 'English',
+        proficiencyLevel: user.proficiencyLevel || 'Intermediate',
+        learningGoal: user.learningGoal || 'Career Advancement',
+        weeklyGoal: user.weeklyGoal || '20',
+        bio: user.bio || 'Passionate language learner focused on Spanish and Business English.',
+      });
+    }
+  }, [user]);
+
+  const handleInputChange = (field: keyof FormState, value: string) => {
+    setForm(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setForm({
+        name: user.name || '',
+        email: user.email || '',
+        targetLanguage: user.targetLanguage || 'Spanish',
+        nativeLanguage: user.nativeLanguage || 'English',
+        proficiencyLevel: user.proficiencyLevel || 'Intermediate',
+        learningGoal: user.learningGoal || 'Career Advancement',
+        weeklyGoal: user.weeklyGoal || '20',
+        bio: user.bio || 'Passionate language learner focused on Spanish and Business English.',
+      });
+    }
     setEditing(false);
-    toast.success('Profile updated successfully!');
+  };
+
+  const handleSave = () => {
+    if (!form.name.trim()) {
+      toast.error('Name cannot be empty.');
+      return;
+    }
+
+    updateUser({
+      name: form.name.trim(),
+      targetLanguage: form.targetLanguage,
+      nativeLanguage: form.nativeLanguage,
+      proficiencyLevel: form.proficiencyLevel,
+      learningGoal: form.learningGoal,
+      weeklyGoal: form.weeklyGoal,
+      bio: form.bio.trim(),
+    });
+    setEditing(false);
+    toast.success('Profile saved and synced globally.');
+  };
+
+  const handleAvatarTrigger = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error('File rejected: Attachment parameters must sit below 2MB boundary.');
+        return;
+      }
+      toast.loading('Staging binary resource upload to cloud infrastructure...');
+      setTimeout(() => {
+        toast.dismiss();
+        toast.success('Asset pipeline processed: Profile snapshot configuration revised.');
+      }, 1500);
+    }
   };
 
   return (
-    <DashboardLayout title="My Profile" subtitle="Manage your language learning profile">
-      <div className="max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Avatar Card */}
-        <div className="lg:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl border border-border p-6 text-center">
+    <DashboardLayout title="Learner Identity Profile" subtitle="Verify tracking configurations and fine-tune metrics matrices">
+      <div className="max-w-4xl grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        
+        {/* Hidden input node for managing image storage uploads safely */}
+        <input 
+          type="file" 
+          ref={fileInputRef} 
+          onChange={handleAvatarChange} 
+          className="hidden" 
+          accept="image/png, image/jpeg, image/webp"
+        />
+
+        {/* Left Side Column: Avatar Identity & Progress Nodes */}
+        <div className="lg:col-span-1 space-y-4 select-none">
+          
+          {/* Identity Core Matrix Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center shadow-sm">
             <div className="relative inline-block mb-4">
-              <div className="w-24 h-24 gradient-primary rounded-full flex items-center justify-center text-white font-heading font-bold text-3xl mx-auto">
-                {user?.name?.charAt(0).toUpperCase()}
+              <div className="w-20 h-20 bg-slate-900 border border-slate-800 rounded-full flex items-center justify-center text-slate-100 font-bold text-2xl mx-auto shadow-inner">
+                {form.name ? form.name.charAt(0).toUpperCase() : <User className="w-8 h-8 text-slate-400" />}
               </div>
-              <button className="absolute bottom-0 right-0 w-8 h-8 gradient-primary rounded-full flex items-center justify-center text-white shadow-lg hover:opacity-90 transition-opacity">
-                <Camera className="w-4 h-4" />
+              <button 
+                onClick={handleAvatarTrigger}
+                type="button"
+                className="absolute bottom-0 right-0 w-7 h-7 bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-600 shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
+                title="Modify identification asset source"
+              >
+                <Camera className="w-3.5 h-3.5" />
               </button>
             </div>
-            <h3 className="font-heading font-bold text-lg">{user?.name}</h3>
-            <p className="text-sm text-muted-foreground">{user?.email}</p>
-            <span className="inline-block mt-2 text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">Language Learner</span>
+            
+            <h3 className="font-bold text-base text-slate-800 tracking-tight">{user?.name || 'Anonymous User'}</h3>
+            <p className="text-xs text-slate-400 font-medium">{user?.email || 'unverified@network.local'}</p>
+            <span className="inline-flex mt-2.5 text-[10px] uppercase tracking-wider bg-slate-100 border border-slate-200/60 text-slate-600 px-2.5 py-0.5 rounded-md font-bold">
+              Language Candidate
+            </span>
 
-            <div className="mt-4 pt-4 border-t border-border space-y-2">
+            <div className="mt-5 pt-4 border-t border-slate-100 space-y-2.5 text-xs font-semibold text-slate-500">
               {[
-                { label: 'Member since', value: user?.joinDate || 'Jan 2024' },
-                { label: 'Day streak', value: `${user?.streak || 0} days` },
-                { label: 'Points earned', value: `${user?.points?.toLocaleString() || 0} pts` },
+                { label: 'Member Framework', value: user?.joinDate || 'Jan 2024', icon: <CalendarDays className="w-3.5 h-3.5 text-slate-400" /> },
+                { label: 'Active Progression Streak', value: `${user?.streak || 0} Days`, icon: <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500/10" /> },
+                { label: 'Aggregated Token Yield', value: `${user?.points?.toLocaleString() || 0} PTS`, icon: <Award className="w-3.5 h-3.5 text-slate-400" /> },
               ].map(item => (
-                <div key={item.label} className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">{item.label}</span>
-                  <span className="font-medium">{item.value}</span>
+                <div key={item.label} className="flex items-center justify-between">
+                  <span className="text-slate-400 font-medium flex items-center gap-1.5">{item.icon} {item.label}</span>
+                  <span className="text-slate-700 font-bold uppercase text-[11px]">{item.value}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Progress Summary */}
-          <div className="bg-white rounded-2xl border border-border p-5">
-            <h4 className="font-semibold text-sm mb-3">Learning Progress</h4>
+          {/* Progress Vectors Block */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+            <h4 className="font-bold text-xs text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5" /> Program Progress Loops
+            </h4>
             {[
-              { label: 'Spanish', progress: 45, color: 'gradient-primary' },
-              { label: 'Business English', progress: 72, color: 'gradient-emerald' },
-              { label: 'Vocabulary', progress: 60, color: 'gradient-gold' },
+              { label: 'Spanish Castilian', progress: 45, color: 'bg-slate-900' },
+              { label: 'Business English Matrix', progress: 72, color: 'bg-emerald-600' },
+              { label: 'Vocabulary Database logs', progress: 60, color: 'bg-slate-400' },
             ].map(item => (
-              <div key={item.label} className="mb-3 last:mb-0">
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-muted-foreground">{item.label}</span>
-                  <span className="font-semibold">{item.progress}%</span>
+              <div key={item.label} className="mb-3.5 last:mb-0">
+                <div className="flex justify-between text-[11px] font-bold text-slate-500 mb-1">
+                  <span className="text-slate-400">{item.label}</span>
+                  <span className="text-slate-700">{item.progress}%</span>
                 </div>
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
-                  <div className={`h-full ${item.color} rounded-full`} style={{ width: `${item.progress}%` }} />
+                <div className="h-1.5 bg-slate-100 border border-slate-200/40 rounded-full overflow-hidden">
+                  <div className={`h-full ${item.color} rounded-full transition-all duration-500`} style={{ width: `${item.progress}%` }} />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Profile Form */}
+        {/* Right Side Column: Profile Configuration Entry Block */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-2xl border border-border p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-heading font-semibold text-lg">Profile Information</h3>
+          <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-5 select-none">
+              <h3 className="font-bold text-xs text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-slate-400" /> Infrastructure Variables Registry
+              </h3>
               {!editing ? (
-                <Button size="sm" variant="outline" onClick={() => setEditing(true)} className="text-xs border-primary/30 text-primary hover:bg-primary/5">
-                  <Edit3 className="w-3.5 h-3.5 mr-1.5" /> Edit Profile
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => setEditing(true)} 
+                  className="text-[11px] font-bold h-7 px-2.5 border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-lg shadow-sm"
+                >
+                  <Edit3 className="w-3.5 h-3.5 mr-1.5" /> Modify Parameters
                 </Button>
               ) : (
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => setEditing(false)} className="text-xs">
-                    <X className="w-3.5 h-3.5 mr-1.5" /> Cancel
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={handleCancel} 
+                    className="text-[11px] font-bold h-7 px-2.5 border-slate-200 bg-white text-slate-500 hover:bg-slate-50 rounded-lg"
+                  >
+                    <X className="w-3.5 h-3.5 mr-1.5" /> Terminate
                   </Button>
-                  <Button size="sm" onClick={handleSave} className="gradient-primary text-white border-0 text-xs">
-                    <Save className="w-3.5 h-3.5 mr-1.5" /> Save Changes
+                  <Button 
+                    size="sm" 
+                    onClick={handleSave} 
+                    className="text-[11px] font-bold h-7 px-3 bg-slate-900 border border-slate-800 text-white hover:bg-slate-800 rounded-lg shadow-sm"
+                  >
+                    <Save className="w-3.5 h-3.5 mr-1.5" /> Commit State
                   </Button>
                 </div>
               )}
@@ -106,70 +237,88 @@ const LearnerProfile: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">Full Name</Label>
-                <Input value={form.name} disabled={!editing} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} className="h-10 text-sm" />
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Full Candidate Identifier</Label>
+                <Input 
+                  value={form.name} 
+                  disabled={!editing} 
+                  onChange={e => handleInputChange('name', e.target.value)} 
+                  className="h-9 text-xs border-slate-200 focus-visible:ring-slate-900/10 disabled:bg-slate-50 disabled:text-slate-500 rounded-lg" 
+                />
               </div>
+              
               <div>
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">Email Address</Label>
-                <Input value={form.email} disabled className="h-10 text-sm bg-muted/50" />
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Network Route Target (Email)</Label>
+                <Input 
+                  value={form.email} 
+                  disabled 
+                  className="h-9 text-xs bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed select-all rounded-lg" 
+                />
               </div>
+              
               <div>
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">Native Language</Label>
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Linguistic Base (Native Language)</Label>
                 <select
                   disabled={!editing}
                   value={form.nativeLanguage}
-                  onChange={e => setForm(p => ({ ...p, nativeLanguage: e.target.value }))}
-                  className="w-full h-10 border border-input rounded-lg px-3 text-sm bg-white outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted/50"
+                  onChange={e => handleInputChange('nativeLanguage', e.target.value)}
+                  className="w-full h-9 border border-slate-200 rounded-lg px-2.5 text-xs bg-white text-slate-800 outline-none focus:ring-1 focus:ring-slate-900/10 disabled:bg-slate-50 disabled:text-slate-500 transition-all cursor-pointer"
                 >
-                  {LANGUAGES.map(l => <option key={l}>{l}</option>)}
+                  {LANGUAGES.map(lang => <option key={lang} value={lang}>{lang}</option>)}
                 </select>
               </div>
+              
               <div>
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">Target Language</Label>
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Target Development Track</Label>
                 <select
                   disabled={!editing}
                   value={form.targetLanguage}
-                  onChange={e => setForm(p => ({ ...p, targetLanguage: e.target.value }))}
-                  className="w-full h-10 border border-input rounded-lg px-3 text-sm bg-white outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted/50"
+                  onChange={e => handleInputChange('targetLanguage', e.target.value)}
+                  className="w-full h-9 border border-slate-200 rounded-lg px-2.5 text-xs bg-white text-slate-800 outline-none focus:ring-1 focus:ring-slate-900/10 disabled:bg-slate-50 disabled:text-slate-500 transition-all cursor-pointer"
                 >
-                  {LANGUAGES.map(l => <option key={l}>{l}</option>)}
+                  {LANGUAGES.map(lang => <option key={lang} value={lang}>{lang}</option>)}
                 </select>
               </div>
+              
               <div>
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">Proficiency Level</Label>
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Vetted Baseline Capability</Label>
                 <select
                   disabled={!editing}
                   value={form.proficiencyLevel}
-                  onChange={e => setForm(p => ({ ...p, proficiencyLevel: e.target.value }))}
-                  className="w-full h-10 border border-input rounded-lg px-3 text-sm bg-white outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted/50"
+                  onChange={e => handleInputChange('proficiencyLevel', e.target.value)}
+                  className="w-full h-9 border border-slate-200 rounded-lg px-2.5 text-xs bg-white text-slate-800 outline-none focus:ring-1 focus:ring-slate-900/10 disabled:bg-slate-50 disabled:text-slate-500 transition-all cursor-pointer"
                 >
-                  {LEVELS.map(l => <option key={l}>{l}</option>)}
+                  {LEVELS.map(lvl => <option key={lvl} value={lvl}>{lvl}</option>)}
                 </select>
               </div>
+              
               <div>
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">Learning Goal</Label>
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Target Mission Focus (Goal)</Label>
                 <select
                   disabled={!editing}
                   value={form.learningGoal}
-                  onChange={e => setForm(p => ({ ...p, learningGoal: e.target.value }))}
-                  className="w-full h-10 border border-input rounded-lg px-3 text-sm bg-white outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted/50"
+                  onChange={e => handleInputChange('learningGoal', e.target.value)}
+                  className="w-full h-9 border border-slate-200 rounded-lg px-2.5 text-xs bg-white text-slate-800 outline-none focus:ring-1 focus:ring-slate-900/10 disabled:bg-slate-50 disabled:text-slate-500 transition-all cursor-pointer"
                 >
-                  {GOALS.map(g => <option key={g}>{g}</option>)}
+                  {GOALS.map(goal => <option key={goal} value={goal}>{goal}</option>)}
                 </select>
               </div>
+              
               <div className="sm:col-span-2">
-                <Label className="text-xs font-medium mb-1.5 block text-muted-foreground uppercase tracking-wide">About Me</Label>
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 block">Metadata Log Notes (About Me)</Label>
                 <textarea
                   disabled={!editing}
                   value={form.bio}
-                  onChange={e => setForm(p => ({ ...p, bio: e.target.value }))}
-                  rows={3}
-                  className="w-full border border-input rounded-lg px-3 py-2.5 text-sm bg-white outline-none focus:ring-2 focus:ring-primary/20 disabled:bg-muted/50 resize-none"
+                  onChange={e => handleInputChange('bio', e.target.value)}
+                  rows={4}
+                  className="w-full border border-slate-200 rounded-lg px-3 py-2 text-xs bg-white text-slate-800 outline-none focus:ring-1 focus:ring-slate-900/10 disabled:bg-slate-50 disabled:text-slate-500 transition-all resize-none font-medium leading-relaxed"
+                  placeholder="Insert localized user background details..."
                 />
               </div>
             </div>
+
           </div>
         </div>
+
       </div>
     </DashboardLayout>
   );

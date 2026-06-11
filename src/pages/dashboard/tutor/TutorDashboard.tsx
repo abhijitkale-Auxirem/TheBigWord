@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { Users, Star, DollarSign, Calendar, Clock, TrendingUp, ChevronRight, Video, MessageSquare, Award } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { ROUTES } from '@/constants/routes';
+import { toast } from 'sonner';
 
 const UPCOMING_CLASSES = [
   { student: 'Priya Sharma', time: 'Today, 2:00 PM', duration: '60 min', type: 'Business English', status: 'upcoming' },
@@ -19,6 +22,57 @@ const RECENT_REVIEWS = [
 
 const TutorDashboard: React.FC = () => {
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const [upcomingClasses, setUpcomingClasses] = useState<any[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('tbw_tutor_bookings');
+    let dynamicClasses = [...UPCOMING_CLASSES];
+
+    if (stored && user) {
+      const allBookings = JSON.parse(stored);
+      const tutorBookings = allBookings.filter((b: any) => b.tutorName === user.name && b.status === 'upcoming');
+
+      if (tutorBookings.length > 0) {
+        const mappedBookings = tutorBookings.map((b: any) => ({
+          id: b.id,
+          student: b.learnerName || 'Alex Morgan',
+          time: `${b.date}, ${b.time}`,
+          duration: '60 min',
+          type: b.tutorSpecialty,
+          status: b.status,
+          isDynamic: true
+        }));
+
+        dynamicClasses = [...mappedBookings, ...UPCOMING_CLASSES];
+      }
+    }
+    setUpcomingClasses(dynamicClasses);
+  }, [user]);
+
+  const handleCompleteSession = (id: string) => {
+    const stored = localStorage.getItem('tbw_tutor_bookings');
+    if (stored) {
+      const allBookings = JSON.parse(stored);
+      const updated = allBookings.map((b: any) => b.id === id ? { ...b, status: 'completed' } : b);
+      localStorage.setItem('tbw_tutor_bookings', JSON.stringify(updated));
+      toast.success('Session completed.');
+      
+      const tutorBookings = updated.filter((b: any) => b.tutorName === user?.name && b.status === 'upcoming');
+      const mappedBookings = tutorBookings.map((b: any) => ({
+        id: b.id,
+        student: b.learnerName || 'Alex Morgan',
+        time: `${b.date}, ${b.time}`,
+        duration: '60 min',
+        type: b.tutorSpecialty,
+        status: b.status,
+        isDynamic: true
+      }));
+      setUpcomingClasses([...mappedBookings, ...UPCOMING_CLASSES]);
+    } else {
+      toast.info('Joining video room for mock session...');
+    }
+  };
 
   return (
     <DashboardLayout title="Tutor Dashboard" subtitle="Manage your classes and students">
@@ -67,29 +121,57 @@ const TutorDashboard: React.FC = () => {
         <div className="lg:col-span-3">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-heading font-semibold text-lg">Upcoming Classes</h3>
-            <button className="text-sm text-primary font-medium flex items-center gap-1">View schedule <ChevronRight className="w-4 h-4" /></button>
+            <button 
+              onClick={() => navigate(ROUTES.TUTOR_SCHEDULE)}
+              className="text-sm text-primary font-medium flex items-center gap-1"
+            >
+              View schedule <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
-          <div className="space-y-3">
-            {UPCOMING_CLASSES.map((cls, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-border p-4 flex items-center gap-4 hover:shadow-md transition-shadow">
-                <div className="w-10 h-10 gradient-primary rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                  {cls.student.charAt(0)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="font-semibold text-sm">{cls.student}</div>
-                  <div className="text-xs text-muted-foreground">{cls.type} · {cls.duration}</div>
-                </div>
-                <div className="text-right">
-                  <div className="text-xs font-medium text-foreground">{cls.time}</div>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${cls.status === 'upcoming' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
-                    {cls.status}
-                  </span>
-                </div>
-                <Button size="sm" variant="outline" className="text-xs border-primary/30 text-primary hover:bg-primary/5 flex-shrink-0">
-                  <Video className="w-3 h-3 mr-1" /> Join
-                </Button>
-              </div>
-            ))}
+          <div className="bg-white rounded-2xl border border-border overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-border bg-brand-surface text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    {['Student', 'Class Type', 'Time', 'Duration', 'Status', 'Action'].map(h => (
+                      <th key={h} className="text-left px-4 py-2.5">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border text-xs">
+                  {upcomingClasses.map((cls, i) => (
+                    <tr key={i} className="hover:bg-slate-50/40 transition-colors">
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 gradient-primary rounded-full flex items-center justify-center text-white font-bold text-[10px]">
+                            {cls.student.charAt(0)}
+                          </div>
+                          <span className="font-semibold text-slate-900">{cls.student}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap text-slate-700 font-medium">{cls.type}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-slate-500 font-semibold">{cls.time}</td>
+                      <td className="px-4 py-3 whitespace-nowrap text-slate-500">{cls.duration}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${cls.status === 'upcoming' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-blue-50 text-blue-600 border border-blue-100'}`}>
+                          {cls.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => handleCompleteSession(cls.id)}
+                          className="h-7 text-[10px] px-2.5 border-primary/30 text-primary hover:bg-primary/5 flex-shrink-0"
+                        >
+                          <Video className="w-3 h-3 mr-1" /> Join
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

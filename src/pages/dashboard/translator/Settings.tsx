@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { Bell, Globe, CreditCard, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const TranslatorSettings: React.FC = () => {
+  const { user, updateUser } = useAuthContext();
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
     emailNotifs: true, newProjects: true, deadlineAlerts: true,
     currency: 'USD', payoutMethod: 'Bank Transfer', invoiceAuto: true,
     defaultLangPair: 'English → French', availableForWork: true,
   });
+
+  useEffect(() => {
+    if (user?.settings) {
+      setSettings(prev => ({
+        ...prev,
+        ...user.settings
+      }));
+    }
+  }, [user]);
+
   const toggle = (key: keyof typeof settings) => setSettings(p => ({ ...p, [key]: !p[key] }));
   const Toggle: React.FC<{ active: boolean; onToggle: () => void }> = ({ active, onToggle }) => (
     <button onClick={onToggle} className={`w-11 h-6 rounded-full transition-all flex-shrink-0 relative ${active ? 'gradient-primary' : 'bg-muted'}`}>
@@ -28,7 +40,15 @@ const TranslatorSettings: React.FC = () => {
       {children}
     </div>
   );
-  const handleSave = async () => { setSaving(true); await new Promise(r => setTimeout(r, 900)); setSaving(false); toast.success('Settings saved!'); };
+  const handleSave = async () => {
+    setSaving(true);
+    await new Promise(r => setTimeout(r, 600));
+    updateUser({
+      settings
+    });
+    setSaving(false);
+    toast.success('Settings saved successfully!');
+  };
   return (
     <DashboardLayout title="Translator Settings" subtitle="Payout preferences, notifications, and availability">
       <div className="max-w-2xl">

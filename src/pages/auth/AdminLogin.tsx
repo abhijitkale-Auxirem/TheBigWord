@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthLayout from '@/layouts/AuthLayout';
 import { Button } from '@/components/ui/button';
@@ -6,15 +6,30 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { ROUTES } from '@/constants/routes';
+import { UserRole } from '@/types/auth.types';
 import { Shield, Eye, EyeOff, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const ROLE_ROUTES: Record<UserRole, string> = {
+  learner: ROUTES.LEARNER_DASHBOARD,
+  tutor: ROUTES.TUTOR_DASHBOARD,
+  translator: ROUTES.TRANSLATOR_DASHBOARD,
+  corporate: ROUTES.CORPORATE_DASHBOARD,
+  admin: ROUTES.ADMIN_DASHBOARD,
+};
+
 const AdminLogin: React.FC = () => {
-  const { login, isLoading } = useAuthContext();
+  const { login, isAuthenticated, isLoading, user } = useAuthContext();
   const navigate = useNavigate();
   const [email, setEmail] = useState('admin@demo.com');
   const [password, setPassword] = useState('demo123');
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(ROLE_ROUTES[user.role], { replace: true });
+    }
+  }, [isAuthenticated, navigate, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

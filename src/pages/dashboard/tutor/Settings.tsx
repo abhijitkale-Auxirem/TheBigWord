@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { Bell, Globe, Lock, CreditCard, Eye, EyeOff, Moon, Sun, Save, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const TutorSettings: React.FC = () => {
+  const { user, updateUser } = useAuthContext();
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
     emailNotifs: true, smsNotifs: false, bookingAlerts: true,
@@ -12,11 +14,23 @@ const TutorSettings: React.FC = () => {
     payoutMethod: 'Bank Transfer', payoutDay: 'Weekly',
   });
 
+  useEffect(() => {
+    if (user?.settings) {
+      setSettings(prev => ({
+        ...prev,
+        ...user.settings
+      }));
+    }
+  }, [user]);
+
   const toggle = (key: keyof typeof settings) => setSettings(p => ({ ...p, [key]: !p[key] }));
 
   const handleSave = async () => {
     setSaving(true);
-    await new Promise(r => setTimeout(r, 900));
+    await new Promise(r => setTimeout(r, 600));
+    updateUser({
+      settings
+    });
     setSaving(false);
     toast.success('Settings saved successfully!');
   };

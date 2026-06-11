@@ -4,8 +4,12 @@ export const ROUTES = {
   SIGNUP: '/signup',
   FORGOT_PASSWORD: '/forgot-password',
   ADMIN_LOGIN: '/admin/login',
+  NOTIFICATIONS: '/dashboard/notifications',
 
   // Public pages
+  COURSES: '/courses',
+  COMMUNITY: '/community',
+  PRICING: '/pricing',
   BLOG: '/blog',
   BLOG_DETAILS: '/blog/:slug',
   CAREERS: '/careers',
@@ -13,6 +17,11 @@ export const ROUTES = {
   CONTACT: '/contact',
   PRESS: '/press',
   DOCUMENTATION: '/docs',
+  ABOUT: '/about',
+  PARTNERS: '/partners',
+  PRIVACY: '/privacy',
+  TERMS: '/terms',
+  COOKIES: '/cookies',
 
   // Learner
   LEARNER_DASHBOARD: '/dashboard/learner',

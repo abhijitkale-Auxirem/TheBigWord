@@ -88,40 +88,51 @@ const TestingCenter: React.FC = () => {
         ))}
       </div>
 
-      {/* Tests Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 stagger-children">
-        {TESTS.map(test => (
-          <div key={test.id} className="bg-white rounded-2xl border border-border p-5 hover:shadow-lg transition-all group">
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${typeColors[test.type]}`}>{test.type}</span>
-                  {test.status === 'completed' && <CheckCircle className="w-4 h-4 text-emerald-500" />}
-                  {test.status === 'in-progress' && <AlertCircle className="w-4 h-4 text-orange-500" />}
-                </div>
-                <h3 className="font-heading font-semibold text-base group-hover:text-primary transition-colors">{test.name}</h3>
-              </div>
-              {test.lastScore !== null && (
-                <div className="text-right flex-shrink-0">
-                  <div className="font-heading font-bold text-lg text-primary">{test.lastScore}</div>
-                  <div className="text-xs text-muted-foreground">Last score</div>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
-              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{test.duration}</span>
-              <span className="flex items-center gap-1"><ClipboardList className="w-3.5 h-3.5" />{test.questions} questions</span>
-              <span>{test.difficulty}</span>
-            </div>
-            <button onClick={() => setActiveTest(test.id)}
-              className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                test.status === 'in-progress' ? 'bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-200' : 'gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/20'
-              }`}>
-              <Play className="w-4 h-4" />
-              {test.status === 'completed' ? 'Retake Test' : test.status === 'in-progress' ? 'Continue Test' : 'Start Test'}
-            </button>
-          </div>
-        ))}
+      <div className="bg-white rounded-2xl border border-border overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[700px]">
+            <thead>
+              <tr className="border-b border-border bg-brand-surface">
+                {['Test Name', 'Type', 'Duration', 'Questions', 'Difficulty', 'Last Score', 'Status / Action'].map(h => (
+                  <th key={h} className="text-left text-xs font-semibold text-muted-foreground px-5 py-3 uppercase tracking-wide">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border text-sm">
+              {TESTS.map(test => (
+                <tr key={test.id} className="hover:bg-slate-50/40 transition-colors">
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <div className="font-semibold text-slate-900 flex items-center gap-2">
+                      <span>{test.name}</span>
+                      {test.status === 'completed' && <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />}
+                      {test.status === 'in-progress' && <AlertCircle className="w-3.5 h-3.5 text-orange-500" />}
+                    </div>
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap"><span className={`text-xs px-2.5 py-1 rounded-full font-semibold ${typeColors[test.type]}`}>{test.type}</span></td>
+                  <td className="px-5 py-4 whitespace-nowrap text-slate-500">{test.duration}</td>
+                  <td className="px-5 py-4 whitespace-nowrap text-slate-600 font-medium">{test.questions} questions</td>
+                  <td className="px-5 py-4 whitespace-nowrap text-slate-500">{test.difficulty}</td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    {test.lastScore !== null ? (
+                      <span className="font-semibold text-primary">{test.lastScore}</span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="px-5 py-4 whitespace-nowrap">
+                    <button onClick={() => setActiveTest(test.id)}
+                      className={`h-8 px-4 rounded-xl text-xs font-semibold transition-all inline-flex items-center gap-1 text-white ${
+                        test.status === 'in-progress' ? 'bg-orange-500 hover:bg-orange-600 shadow-md shadow-orange-100' : 'gradient-primary hover:opacity-90 shadow-md'
+                      }`}>
+                      <Play className="w-3 h-3 fill-current" />
+                      {test.status === 'completed' ? 'Retake' : test.status === 'in-progress' ? 'Resume' : 'Start'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </DashboardLayout>
   );

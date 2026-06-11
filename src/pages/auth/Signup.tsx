@@ -69,29 +69,29 @@ const Signup: React.FC = () => {
 
   return (
     <AuthLayout>
-      <div>
+      <div className="max-w-[440px] mx-auto w-full">
         {/* Header */}
         <div className="mb-6 animate-fade-in">
           <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4 border border-emerald-100">
-            <Sparkles className="w-3.5 h-3.5" /> Free Forever Plan Available
+            <Sparkles className="w-3.5 h-3.5 text-emerald-500" /> Free Forever Plan Available
           </div>
-          <h1 className="font-heading font-bold text-3xl text-foreground mb-2">Create your account</h1>
-          <p className="text-muted-foreground">Start your language journey — free forever.</p>
+          <h1 className="font-heading font-bold text-3xl text-slate-900 mb-2 tracking-tight">Create your account</h1>
+          <p className="text-sm text-slate-500">Start your language journey — free forever.</p>
         </div>
 
         {/* Perks */}
-        <div className="grid grid-cols-2 gap-2 mb-6 animate-fade-in delay-100">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-6 animate-fade-in delay-100">
           {PERKS.map(perk => (
             <div key={perk} className="flex items-start gap-2">
               <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-              <span className="text-xs text-muted-foreground">{perk}</span>
+              <span className="text-xs font-medium text-slate-600">{perk}</span>
             </div>
           ))}
         </div>
 
         {/* Role Selection */}
         <div className="mb-5 animate-fade-in delay-200">
-          <Label className="text-sm font-medium mb-2 block">I am signing up as</Label>
+          <Label className="text-sm font-semibold text-slate-900 mb-2 block">I am signing up as</Label>
           <div className="grid grid-cols-2 gap-2">
             {ROLE_OPTIONS.map(r => (
               <button
@@ -100,13 +100,12 @@ const Signup: React.FC = () => {
                 onClick={() => handleRoleSelect(r.value)}
                 className={`p-3 rounded-xl border text-left transition-all ${
                   selectedRole === r.value
-                    ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-sm'
-                    : 'border-border hover:border-primary/30 hover:bg-brand-surface'
+                    ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-100 shadow-sm'
+                    : 'border-slate-200/80 bg-white hover:border-slate-300'
                 }`}
               >
-                <div className="text-base mb-1">{r.emoji}</div>
-                <div className="text-xs font-semibold text-foreground">{r.label}</div>
-                <div className="text-xs text-muted-foreground">{r.desc}</div>
+                <div className="text-xs font-bold text-slate-900">{r.label}</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">{r.desc}</div>
               </button>
             ))}
           </div>
@@ -116,26 +115,26 @@ const Signup: React.FC = () => {
           <input type="hidden" {...register('role')} value={selectedRole} />
 
           <div>
-            <Label htmlFor="name" className="text-sm font-medium mb-1.5 block">Full Name</Label>
+            <Label htmlFor="name" className="text-sm font-semibold text-slate-900 mb-1.5 block">Full Name</Label>
             <Input id="name" placeholder="Your full name" {...register('name')}
-              className={`h-11 rounded-xl ${errors.name ? 'border-destructive' : ''}`} />
+              className={`h-11 rounded-xl border-slate-200 placeholder:text-slate-400 focus-visible:ring-blue-600 ${errors.name ? 'border-destructive' : ''}`} />
             {errors.name && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.name.message}</p>}
           </div>
 
           <div>
-            <Label htmlFor="email" className="text-sm font-medium mb-1.5 block">Email Address</Label>
+            <Label htmlFor="email" className="text-sm font-semibold text-slate-900 mb-1.5 block">Email Address</Label>
             <Input id="email" type="email" placeholder="you@example.com" {...register('email')}
-              className={`h-11 rounded-xl ${errors.email ? 'border-destructive' : ''}`} />
+              className={`h-11 rounded-xl border-slate-200 placeholder:text-slate-400 focus-visible:ring-blue-600 ${errors.email ? 'border-destructive' : ''}`} />
             {errors.email && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.email.message}</p>}
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-sm font-medium mb-1.5 block">Password</Label>
+            <Label htmlFor="password" className="text-sm font-semibold text-slate-900 mb-1.5 block">Password</Label>
             <div className="relative">
-              <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Min. 8 characters"
-                {...register('password')} className={`h-11 pr-10 rounded-xl ${errors.password ? 'border-destructive' : ''}`} />
+              <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="••••••••••••"
+                {...register('password')} className={`h-11 pr-10 rounded-xl border-slate-200 placeholder:text-slate-400 focus-visible:ring-blue-600 ${errors.password ? 'border-destructive' : ''}`} />
               <button type="button" onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1">
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
@@ -143,28 +142,28 @@ const Signup: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="confirmPassword" className="text-sm font-medium mb-1.5 block">Confirm Password</Label>
+            <Label htmlFor="confirmPassword" className="text-sm font-semibold text-slate-900 mb-1.5 block">Confirm Password</Label>
             <Input id="confirmPassword" type="password" placeholder="Re-enter your password"
-              {...register('confirmPassword')} className={`h-11 rounded-xl ${errors.confirmPassword ? 'border-destructive' : ''}`} />
+              {...register('confirmPassword')} className={`h-11 rounded-xl border-slate-200 placeholder:text-slate-400 focus-visible:ring-blue-600 ${errors.confirmPassword ? 'border-destructive' : ''}`} />
             {errors.confirmPassword && <p className="text-destructive text-xs mt-1 animate-fade-in">{errors.confirmPassword.message}</p>}
           </div>
 
           <Button type="submit" disabled={isLoading}
-            className="w-full h-11 gradient-primary text-white border-0 font-semibold text-sm hover:opacity-90 transition-all rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 mt-2">
+            className="w-full h-11 bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition-all rounded-xl mt-2">
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
             {isLoading ? 'Creating account...' : 'Create Free Account'}
           </Button>
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-xs text-slate-400 leading-normal">
             By signing up, you agree to our{' '}
-            <a href="#" className="text-primary hover:underline">Terms</a> &{' '}
-            <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+            <Link to={ROUTES.TERMS} className="text-blue-600 font-medium hover:underline">Terms</Link> &{' '}
+            <Link to={ROUTES.PRIVACY} className="text-blue-600 font-medium hover:underline">Privacy Policy</Link>
           </p>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground mt-4 animate-fade-in delay-400">
+        <p className="text-center text-sm text-slate-500 mt-4 animate-fade-in delay-400">
           Already have an account?{' '}
-          <Link to={ROUTES.LOGIN} className="text-primary font-semibold hover:underline">Sign in</Link>
+          <Link to={ROUTES.LOGIN} className="text-blue-600 font-semibold hover:underline">Sign in</Link>
         </p>
       </div>
     </AuthLayout>

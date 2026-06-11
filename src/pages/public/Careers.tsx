@@ -1,16 +1,15 @@
 import React from 'react';
 import PublicLayout from '@/layouts/PublicLayout';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/constants/routes';
 import { MapPin, Clock, ArrowRight, Briefcase, Users, Globe, Zap } from 'lucide-react';
+import { toast } from 'sonner';
 
 const OPEN_ROLES = [
-  { title: 'Senior AI/ML Engineer', dept: 'Engineering', location: 'Remote (Global)', type: 'Full-time', tags: ['Python', 'LLM', 'NLP'] },
-  { title: 'Language Curriculum Designer', dept: 'Education', location: 'Remote', type: 'Full-time', tags: ['English', 'Spanish', 'Pedagogy'] },
-  { title: 'Product Manager — Learning', dept: 'Product', location: 'Remote', type: 'Full-time', tags: ['EdTech', 'Agile', 'B2C'] },
-  { title: 'Full-Stack Developer (React/Node)', dept: 'Engineering', location: 'Remote', type: 'Full-time', tags: ['React', 'TypeScript', 'Supabase'] },
-  { title: 'Content Marketing Specialist', dept: 'Marketing', location: 'Remote', type: 'Part-time', tags: ['SEO', 'Copywriting', 'Social'] },
-  { title: 'Customer Success Manager', dept: 'Operations', location: 'Remote', type: 'Full-time', tags: ['SaaS', 'Onboarding', 'B2B'] },
+  { title: 'AI Speech & Pronunciation Engineer', dept: 'AI Research', location: 'Remote (Global)', type: 'Full-time', tags: ['Python', 'ASR', 'Whisper API', 'PyTorch'] },
+  { title: 'Language Curriculum Specialist (Spanish/English)', dept: 'Pedagogy & Education', location: 'Remote', type: 'Full-time', tags: ['CEFR', 'Curriculum Design', 'Linguistics'] },
+  { title: 'EdTech Product Manager — Gamification', dept: 'Product Management', location: 'Remote', type: 'Full-time', tags: ['B2C App', 'Gamification', 'Analytics'] },
+  { title: 'React Native Mobile Developer (Language App)', dept: 'Engineering', location: 'Remote', type: 'Full-time', tags: ['React Native', 'TypeScript', 'Tailwind', 'WebSockets'] },
+  { title: 'Localization Engineer (50+ Languages)', dept: 'Localization & Ops', location: 'Remote', type: 'Part-time', tags: ['L10n', 'i18n', 'Translation Workflows'] },
+  { title: 'Bilingual Customer Support Lead', dept: 'Customer Operations', location: 'Remote', type: 'Full-time', tags: ['Zendesk', 'Bilingual Support', 'SaaS'] },
 ];
 
 const PERKS = [
@@ -21,7 +20,10 @@ const PERKS = [
 ];
 
 const Careers: React.FC = () => {
-  const navigate = useNavigate();
+  const handleApply = (title: string) => {
+    toast.success(`Application portal initiated for "${title}"! Please forward your CV/Resume to careers@thebigword.ai`);
+  };
+
   return (
     <PublicLayout>
       {/* Hero */}
@@ -76,8 +78,11 @@ const Careers: React.FC = () => {
           <h2 className="font-heading font-bold text-3xl text-center mb-10">Open Positions</h2>
           <div className="space-y-3 stagger-children">
             {OPEN_ROLES.map(role => (
-              <div key={role.title}
-                className="bg-white rounded-2xl border border-border p-5 hover:border-primary/30 hover:shadow-lg transition-all cursor-pointer group">
+              <div 
+                key={role.title}
+                onClick={() => handleApply(role.title)}
+                className="bg-white rounded-2xl border border-border p-5 hover:border-primary/30 hover:shadow-lg transition-all cursor-pointer group"
+              >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <h3 className="font-heading font-semibold text-base group-hover:text-primary transition-colors">{role.title}</h3>
@@ -90,7 +95,13 @@ const Careers: React.FC = () => {
                       {role.tags.map(t => <span key={t} className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full font-medium">{t}</span>)}
                     </div>
                   </div>
-                  <button className="flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all flex-shrink-0">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleApply(role.title);
+                    }}
+                    className="flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all flex-shrink-0"
+                  >
                     Apply Now <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>

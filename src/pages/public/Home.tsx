@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import PublicLayout from '@/layouts/PublicLayout';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { ROUTES } from '@/constants/routes';
 import {
   Globe, BookOpen, Mic, FileText, Users,
@@ -14,12 +15,90 @@ import {
 /* ─── Data ──────────────────────────────────────────────────────────── */
 
 const FEATURES = [
-  { icon: Brain, title: 'AI Vocabulary Builder', desc: 'Smart flashcards with spaced repetition and context-based word learning powered by GPT-4.', color: '#3b82f6', bg: '#eff6ff', badge: 'Most Popular' },
-  { icon: Mic, title: 'AI Conversation Coach', desc: 'Practice speaking with AI in real-time. Mock interviews, business scenarios, and daily chats.', color: '#8b5cf6', bg: '#f5f3ff', badge: null },
-  { icon: Languages, title: 'Translation Platform', desc: 'Text, voice, and document translation across 50+ languages with blazing accuracy.', color: '#10b981', bg: '#ecfdf5', badge: 'New' },
-  { icon: FileText, title: 'Writing Studio', desc: 'AI-powered grammar checker, content writer, email assistant, and tone optimizer.', color: '#f59e0b', bg: '#fffbeb', badge: null },
-  { icon: GraduationCap, title: 'Certification Center', desc: 'Mock IELTS, TOEFL, PTE with AI-scored results and digital certificate issuance.', color: '#ef4444', bg: '#fef2f2', badge: null },
-  { icon: Users, title: 'Tutor Marketplace', desc: 'Connect with native speakers and expert tutors for personalized 1-on-1 sessions.', color: '#ec4899', bg: '#fdf2f8', badge: null },
+  { 
+    icon: Brain, 
+    title: 'AI Vocabulary Builder', 
+    desc: 'Smart flashcards with spaced repetition and context-based word learning powered by GPT-4.', 
+    color: '#3b82f6', 
+    bg: '#eff6ff', 
+    badge: 'Most Popular',
+    details: [
+      'Smart flashcards adapted dynamically based on your learning speed.',
+      'Spaced repetition algorithm (SRS) ensures long-term memory retention.',
+      'Generates contextual example sentences and high-fidelity speech audios.',
+      'Import vocabulary lists from articles or text files instantly.'
+    ]
+  },
+  { 
+    icon: Mic, 
+    title: 'AI Conversation Coach', 
+    desc: 'Practice speaking with AI in real-time. Mock interviews, business scenarios, and daily chats.', 
+    color: '#8b5cf6', 
+    bg: '#f5f3ff', 
+    badge: null,
+    details: [
+      'Real-time voice analysis with immediate feedback on pronunciation.',
+      'Tailored roleplay scenarios including job interviews and shopping.',
+      'Grammar checks highlight errors and offer correct alternatives.',
+      'Customizable AI speech rates and native regional accents.'
+    ]
+  },
+  { 
+    icon: Languages, 
+    title: 'Translation Platform', 
+    desc: 'Text, voice, and document translation across 50+ languages with blazing accuracy.', 
+    color: '#10b981', 
+    bg: '#ecfdf5', 
+    badge: 'New',
+    details: [
+      'Multi-modal translation: text, audio files, and complete documents.',
+      'Advanced vocabulary sensitivity to retain industry-specific slang.',
+      'Instant side-by-side comparison for fine-tuning translations.',
+      'Offline saving options for continuous learning on-the-go.'
+    ]
+  },
+  { 
+    icon: FileText, 
+    title: 'Writing Studio', 
+    desc: 'AI-powered grammar checker, content writer, email assistant, and tone optimizer.', 
+    color: '#f59e0b', 
+    bg: '#fffbeb', 
+    badge: null,
+    details: [
+      'Smart grammar checking for correct spelling and syntax alignment.',
+      'Tone adjustments (e.g. formal, friendly, technical) for emails.',
+      'Co-writing assistant helps complete paragraphs and phrasing.',
+      'Instant synonym and vocabulary lookup inside the active editor.'
+    ]
+  },
+  { 
+    icon: GraduationCap, 
+    title: 'Certification Center', 
+    desc: 'Mock IELTS, TOEFL, PTE with AI-scored results and digital certificate issuance.', 
+    color: '#ef4444', 
+    bg: '#fef2f2', 
+    badge: null,
+    details: [
+      'Full-length mock exams for IELTS, TOEFL, and PTE formats.',
+      'AI grading delivers sectional feedback (listening, writing, speaking).',
+      'Downloadable verified digital certificates of completion.',
+      'Progress metrics mapping to standard CEFR tiers (A1 to C2).'
+    ]
+  },
+  { 
+    icon: Users, 
+    title: 'Tutor Marketplace', 
+    desc: 'Connect with native speakers and expert tutors for personalized 1-on-1 sessions.', 
+    color: '#ec4899', 
+    bg: '#fdf2f8', 
+    badge: null,
+    details: [
+      'Directory of certified native speakers across 30+ countries.',
+      'Easy booking system to select sessions matching your schedule.',
+      'Embedded video and whiteboard tools for classroom calls.',
+      'Session summaries and notes archived in your student dashboard.'
+    ]
+  },
 ];
 
 const STATS = [
@@ -135,6 +214,7 @@ function StarRow({ count = 5 }: { count?: number }) {
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const [activeFeature, setActiveFeature] = useState<typeof FEATURES[number] | null>(null);
 
   const featuresReveal = useReveal();
   const howReveal = useReveal();
@@ -367,7 +447,11 @@ const Home: React.FC = () => {
                 </div>
                 <h3 className="font-heading font-bold text-lg mb-2 mt-4">{feature.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{feature.desc}</p>
-                <div className="flex items-center gap-1.5 mt-5 text-sm font-semibold group cursor-pointer" style={{ color: feature.color }}>
+                <div 
+                  className="flex items-center gap-1.5 mt-5 text-sm font-semibold group cursor-pointer" 
+                  style={{ color: feature.color }}
+                  onClick={() => setActiveFeature(feature)}
+                >
                   <span>Learn more</span>
                   <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -450,40 +534,64 @@ const Home: React.FC = () => {
       </section>
 
       {/* ═══ 6. LANGUAGES SHOWCASE ════════════════════════════════════ */}
-      <section className="py-24 bg-white">
-        <div ref={langReveal.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`text-center mb-16 transition-all duration-700 ${langReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-            <SectionLabel>Languages</SectionLabel>
-            <h2 className="font-heading font-bold text-4xl lg:text-5xl mt-4 mb-4">
-              50+ Languages,<br />
-              <span className="text-gradient">One Platform</span>
-            </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              The world's most spoken languages, all with native-speaker quality AI training data.
-            </p>
-          </div>
+     <section className="py-24 bg-white relative overflow-hidden">
+  <div ref={langReveal.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <div className={`text-center mb-16 transition-all duration-1000 ease-out ${langReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'}`}>
+      <SectionLabel>Languages</SectionLabel>
+      <h2 className="font-heading font-bold text-4xl lg:text-5xl mt-4 mb-4">
+        50+ Languages,<br />
+        <span className="text-gradient">One Platform</span>
+      </h2>
+      <p className="text-muted-foreground max-w-xl mx-auto">
+        The world's most spoken languages, all with native-speaker quality AI training data.
+      </p>
+    </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-            {LANGUAGES_SHOWCASE.map((lang, i) => (
-              <div
-                key={lang.name}
-                className={`lang-card transition-all duration-700 ${langReveal.visible ? 'opacity-100 scale-100' : 'opacity-0 scale-90'}`}
-                style={{ transitionDelay: `${i * 60}ms` }}
-              >
-                <div className="text-3xl mb-2">{lang.flag}</div>
-                <div className="font-semibold text-sm text-foreground">{lang.name}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{lang.learners} learners</div>
-              </div>
-            ))}
+    {/* Enhanced 3D Grid container with perspective for depth */}
+    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-5 [perspective:1200px]">
+      {LANGUAGES_SHOWCASE.map((lang, i) => (
+        <div
+          key={lang.name}
+          className={`group relative p-5 rounded-2xl bg-white border border-slate-200/80 text-center transition-all duration-[800ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(37,99,235,0.2)] hover:border-blue-300 cursor-pointer ${
+            langReveal.visible 
+              ? 'opacity-100 scale-100 translate-y-0 [transform:rotateX(0deg)]' 
+              : 'opacity-0 scale-90 translate-y-16 [transform:rotateX(45deg)]'
+          }`}
+          style={{ transitionDelay: `${i * 50}ms` }}
+        >
+          {/* Subtle gradient background reveal on hover */}
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none" />
+          
+          {/* Flag with an ultra-smooth 3D pop and spin */}
+          <div className="relative z-10 text-4xl mb-3 inline-block transition-all duration-700 ease-in-out group-hover:scale-125 group-hover:[transform:rotateY(360deg)] drop-shadow-sm group-hover:drop-shadow-md">
+            {lang.flag}
           </div>
-
-          <div className="text-center mt-10">
-            <Link to={ROUTES.SIGNUP} className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:gap-3 transition-all">
-              View all 50+ languages <ArrowRight className="w-4 h-4" />
-            </Link>
+          
+          {/* Typography interactions */}
+          <div className="relative z-10 font-bold text-sm text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
+            {lang.name}
+          </div>
+          <div className="relative z-10 mt-1.5 inline-flex">
+            <span className="text-[11px] font-bold text-slate-400 bg-slate-50 group-hover:bg-blue-100 group-hover:text-blue-600 px-2.5 py-0.5 rounded-full transition-colors duration-300">
+              {lang.learners}
+            </span>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+
+    {/* Upgraded Call to Action Button */}
+    <div className="text-center mt-14">
+      <Link 
+        to={ROUTES.SIGNUP} 
+        className="group inline-flex items-center gap-2 text-sm font-bold text-white bg-slate-900 hover:bg-blue-600 px-7 py-3.5 rounded-full shadow-lg shadow-slate-900/10 hover:shadow-blue-600/25 hover:-translate-y-0.5 transition-all duration-300"
+      >
+        Explore All 50+ Languages 
+        <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* ═══ 7. TESTIMONIALS ══════════════════════════════════════════ */}
       <section id="community" className="py-24 section-bg-alt relative overflow-hidden">
@@ -636,7 +744,7 @@ const Home: React.FC = () => {
                   size="lg"
                   variant="outline"
                   onClick={() => navigate(ROUTES.LOGIN)}
-                  className="border-white/30 text-white hover:bg-white/10 backdrop-blur font-semibold text-base px-8 py-6 rounded-xl"
+                  className="border-white/30 text-black hover:bg-white/10 backdrop-blur font-semibold text-base px-8 py-6 rounded-xl"
                 >
                   Sign In
                 </Button>
@@ -645,6 +753,72 @@ const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Feature Details Modal */}
+      <Dialog open={!!activeFeature} onOpenChange={(open) => !open && setActiveFeature(null)}>
+        <DialogContent className="sm:max-w-[500px] rounded-3xl p-6 md:p-8 border border-border bg-white shadow-2xl">
+          {activeFeature && (
+            <div className="space-y-6">
+              <DialogHeader className="text-left">
+                <div className="flex items-center gap-3.5 mb-2">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center border border-slate-100"
+                    style={{ background: activeFeature.bg, color: activeFeature.color }}
+                  >
+                    <activeFeature.icon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    {activeFeature.badge && (
+                      <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full inline-block mb-1" style={{ background: `${activeFeature.color}15`, color: activeFeature.color }}>
+                        {activeFeature.badge}
+                      </span>
+                    )}
+                    <DialogTitle className="font-heading font-bold text-2xl text-slate-900 leading-tight">
+                      {activeFeature.title}
+                    </DialogTitle>
+                  </div>
+                </div>
+                <DialogDescription className="text-slate-600 text-sm leading-relaxed pt-2">
+                  {activeFeature.desc}
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4">
+                <h4 className="font-heading font-bold text-xs text-slate-800 uppercase tracking-widest">Key Capabilities</h4>
+                <div className="space-y-2.5">
+                  {activeFeature.details.map((detail, idx) => (
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: `${activeFeature.color}15`, color: activeFeature.color }}>
+                        <CheckCircle className="w-3.5 h-3.5" />
+                      </div>
+                      <span className="text-xs text-slate-600 leading-relaxed font-medium">{detail}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-border">
+                <button
+                  onClick={() => {
+                    setActiveFeature(null);
+                    navigate(ROUTES.SIGNUP);
+                  }}
+                  className="flex-1 text-center text-white font-bold py-3 px-6 rounded-xl hover:opacity-95 transition-opacity text-sm shadow-md"
+                  style={{ background: activeFeature.color }}
+                >
+                  Start Learning Now
+                </button>
+                <button
+                  onClick={() => setActiveFeature(null)}
+                  className="border border-border text-slate-600 font-semibold py-3 px-6 rounded-xl hover:bg-slate-50 transition-colors text-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
     </PublicLayout>
   );

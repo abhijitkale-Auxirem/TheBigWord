@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,11 +20,11 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>;
 
 const ROLE_OPTIONS: { value: UserRole; label: string; emoji: string }[] = [
-  { value: 'learner', label: 'Language Learner', emoji: '📚' },
-  { value: 'tutor', label: 'Tutor / Trainer', emoji: '🎓' },
-  { value: 'translator', label: 'Translator', emoji: '🌐' },
-  { value: 'corporate', label: 'Corporate Account', emoji: '🏢' },
-  { value: 'admin', label: 'Administrator', emoji: '🛡️' },
+  { value: 'learner', label: 'Language Learner', emoji: '' },
+  { value: 'tutor', label: 'Tutor / Trainer', emoji: '' },
+  { value: 'translator', label: 'Translator', emoji: '' },
+  { value: 'corporate', label: 'Corporate Account', emoji: '' },
+  { value: 'admin', label: 'Administrator', emoji: '' },
 ];
 
 const ROLE_ROUTES: Record<UserRole, string> = {
@@ -44,7 +44,7 @@ const DEMO_ACCOUNTS = [
 ];
 
 const Login: React.FC = () => {
-  const { login, isLoading } = useAuthContext();
+  const { login, isAuthenticated, isLoading, user } = useAuthContext();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole>('learner');
@@ -53,8 +53,15 @@ const Login: React.FC = () => {
     resolver: zodResolver(loginSchema),
   });
 
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(ROLE_ROUTES[user.role], { replace: true });
+    }
+  }, [isAuthenticated, navigate, user]);
+
   const onSubmit = async (data: LoginForm) => {
-    await login(data, selectedRole);
+    const credentials = { email: data.email, password: data.password };
+    await login(credentials, selectedRole);
     toast.success('Welcome back to TheBigWord!');
     navigate(ROLE_ROUTES[selectedRole]);
   };

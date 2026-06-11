@@ -21,12 +21,32 @@ const Toggle: React.FC<ToggleProps> = ({ checked, onChange }) => (
 );
 
 const LearnerSettings: React.FC = () => {
-  const { user } = useAuthContext();
+  const { user, updateUser } = useAuthContext();
   const [notifs, setNotifs] = useState({ email: true, push: true, reminders: true, weekly: false, community: true });
   const [prefs, setPrefs] = useState({ darkMode: false, soundFx: true, autoPlay: false, publicProfile: true });
   const [privacy, setPrivacy] = useState({ showProgress: true, showBadges: true, analytics: true });
+  const [interfaceLanguage, setInterfaceLanguage] = useState('English');
 
-  const handleSave = () => toast.success('Settings saved successfully!');
+  useEffect(() => {
+    if (user?.settings) {
+      if (user.settings.notifs) setNotifs(user.settings.notifs as any);
+      if (user.settings.prefs) setPrefs(user.settings.prefs as any);
+      if (user.settings.privacy) setPrivacy(user.settings.privacy as any);
+      if (user.settings.interfaceLang) setInterfaceLanguage(user.settings.interfaceLang);
+    }
+  }, [user]);
+
+  const handleSave = () => {
+    updateUser({
+      settings: {
+        notifs,
+        prefs,
+        privacy,
+        interfaceLang: interfaceLanguage
+      }
+    });
+    toast.success('Settings saved successfully!');
+  };
 
   return (
     <DashboardLayout title="Settings" subtitle="Manage your account preferences">
@@ -71,7 +91,11 @@ const LearnerSettings: React.FC = () => {
                 <div className="text-sm font-medium">Interface Language</div>
                 <div className="text-xs text-muted-foreground">Platform display language</div>
               </div>
-              <select className="text-sm border border-input rounded-lg px-3 py-1.5 bg-white outline-none focus:ring-2 focus:ring-primary/20">
+              <select 
+                value={interfaceLanguage}
+                onChange={e => setInterfaceLanguage(e.target.value)}
+                className="text-sm border border-input rounded-lg px-3 py-1.5 bg-white outline-none focus:ring-2 focus:ring-primary/20"
+              >
                 <option>English</option>
                 <option>Spanish</option>
                 <option>French</option>

@@ -8,9 +8,9 @@ import { AuthProvider } from "@/contexts/AuthContext";
 // Core
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ScrollToTop from "@/components/common/ScrollToTop";
 
 // Public
-import Home from "./pages/public/Home";
 import Blog from "./pages/public/Blog";
 import BlogDetails from "./pages/public/BlogDetails";
 import Careers from "./pages/public/Careers";
@@ -18,6 +18,14 @@ import HelpCenter from "./pages/public/HelpCenter";
 import Contact from "./pages/public/Contact";
 import Press from "./pages/public/Press";
 import Documentation from "./pages/public/Documentation";
+import Courses from "./pages/public/Courses";
+import Community from "./pages/public/Community";
+import Pricing from "./pages/public/Pricing";
+import About from "./pages/public/About";
+import Partners from "./pages/public/Partners";
+import PrivacyPolicy from "./pages/public/PrivacyPolicy";
+import TermsOfService from "./pages/public/TermsOfService";
+import CookieSettings from "./pages/public/CookieSettings";
 
 // Auth
 import Login from "./pages/auth/Login";
@@ -72,6 +80,9 @@ import RevenueMonitoring from "./pages/dashboard/admin/RevenueMonitoring";
 import AdminProfile from "./pages/dashboard/admin/Profile";
 import AdminSettings from "./pages/dashboard/admin/Settings";
 
+// Common Dashboard Pages
+import NotificationsPage from "./pages/dashboard/Notifications";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -81,9 +92,10 @@ const App = () => (
       <Sonner />
       <AuthProvider>
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Index redirect */}
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Index />} />
             <Route path="/app" element={<Index />} />
 
             {/* Public */}
@@ -94,12 +106,23 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/press" element={<Press />} />
             <Route path="/docs" element={<Documentation />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/cookies" element={<CookieSettings />} />
 
             {/* Auth */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/admin/login" element={<AdminLogin />} />
+
+            {/* Common Dashboard */}
+            <Route path="/dashboard/notifications" element={<NotificationsPage />} />
 
             {/* Learner Dashboard */}
             <Route path="/dashboard/learner" element={<LearnerDashboard />} />

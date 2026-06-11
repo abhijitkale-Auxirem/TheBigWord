@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/layouts/DashboardLayout';
 import { Shield, Bell, Globe, Database, Save, Loader2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
+import { useAuthContext } from '@/contexts/AuthContext';
 
 const AdminSettings: React.FC = () => {
+  const { user, updateUser } = useAuthContext();
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
     maintenanceMode: false, newUserRegistration: true, tutorAutoApproval: false,
@@ -11,6 +13,16 @@ const AdminSettings: React.FC = () => {
     defaultLang: 'English', timezone: 'UTC', maxUploadMB: '50',
     dataBackup: 'Daily', logRetention: '90 days',
   });
+
+  useEffect(() => {
+    if (user?.settings) {
+      setSettings(prev => ({
+        ...prev,
+        ...user.settings
+      }));
+    }
+  }, [user]);
+
   const toggle = (key: keyof typeof settings) => setSettings(p => ({ ...p, [key]: !p[key] }));
   const Toggle: React.FC<{ active: boolean; onToggle: () => void }> = ({ active, onToggle }) => (
     <button onClick={onToggle} className={`w-11 h-6 rounded-full transition-all flex-shrink-0 relative ${active ? 'gradient-primary' : 'bg-muted'}`}>
@@ -29,7 +41,15 @@ const AdminSettings: React.FC = () => {
       {children}
     </div>
   );
-  const handleSave = async () => { setSaving(true); await new Promise(r => setTimeout(r, 900)); setSaving(false); toast.success('System settings saved!'); };
+  const handleSave = async () => {
+    setSaving(true);
+    await new Promise(r => setTimeout(r, 600));
+    updateUser({
+      settings
+    });
+    setSaving(false);
+    toast.success('System settings saved successfully!');
+  };
 
   return (
     <DashboardLayout title="System Settings" subtitle="Global platform configuration and administrative controls">

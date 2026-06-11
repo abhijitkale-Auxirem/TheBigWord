@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/layout/Navbar';
 import { Globe, Twitter, Linkedin, Youtube, Instagram, ArrowRight, Mail, MapPin, Phone, Sparkles } from 'lucide-react';
 import { ROUTES } from '@/constants/routes';
+import { toast } from 'sonner';
 
 interface PublicLayoutProps {
   children: React.ReactNode;
@@ -21,33 +22,31 @@ const FOOTER_LINKS = {
     { label: 'English', href: ROUTES.SIGNUP },
     { label: 'Spanish', href: ROUTES.SIGNUP },
     { label: 'French', href: ROUTES.SIGNUP },
-    { label: 'Mandarin', href: ROUTES.SIGNUP },
-    { label: 'Arabic', href: ROUTES.SIGNUP },
     { label: 'View all 50+', href: ROUTES.SIGNUP },
   ],
   Company: [
-    { label: 'About Us', href: '#' },
+    { label: 'About Us', href: ROUTES.ABOUT },
     { label: 'Blog', href: ROUTES.BLOG },
     { label: 'Careers', href: ROUTES.CAREERS },
     { label: 'Press', href: ROUTES.PRESS },
     { label: 'Contact', href: ROUTES.CONTACT },
-    { label: 'Partners', href: '#' },
+    { label: 'Partners', href: ROUTES.PARTNERS },
   ],
   Support: [
     { label: 'Help Center', href: ROUTES.HELP_CENTER },
     { label: 'Documentation', href: ROUTES.DOCUMENTATION },
-    { label: 'Community Forum', href: '#' },
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-    { label: 'Cookie Settings', href: '#' },
+    { label: 'Community Forum', href: ROUTES.COMMUNITY },
+    { label: 'Privacy Policy', href: ROUTES.PRIVACY },
+    { label: 'Terms of Service', href: ROUTES.TERMS },
+    { label: 'Cookie Settings', href: ROUTES.COOKIES },
   ],
 };
 
 const SOCIAL_LINKS = [
-  { Icon: Twitter, label: 'Twitter', href: '#', color: '#1d9bf0' },
-  { Icon: Linkedin, label: 'LinkedIn', href: '#', color: '#0a66c2' },
-  { Icon: Youtube, label: 'YouTube', href: '#', color: '#ff0000' },
-  { Icon: Instagram, label: 'Instagram', href: '#', color: '#e1306c' },
+  { Icon: Twitter, label: 'Twitter', href: 'https://twitter.com/thebigword', color: '#1d9bf0' },
+  { Icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com/company/thebigword', color: '#0a66c2' },
+  { Icon: Youtube, label: 'YouTube', href: 'https://youtube.com/thebigword', color: '#ff0000' },
+  { Icon: Instagram, label: 'Instagram', href: 'https://instagram.com/thebigword', color: '#e1306c' },
 ];
 
 const LANGUAGES_MARQUEE = [
@@ -57,6 +56,29 @@ const LANGUAGES_MARQUEE = [
 ];
 
 const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
+  const [email, setEmail] = useState('');
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error('Please enter your email address.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Please enter a valid email address.');
+      return;
+    }
+
+    setIsSubscribing(true);
+    setTimeout(() => {
+      setIsSubscribing(false);
+      toast.success(`Thank you! ${email} has been subscribed to our newsletter.`);
+      setEmail('');
+    }, 1000);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -94,18 +116,26 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
                 <h3 className="font-heading font-bold text-2xl text-white mb-1">Stay ahead in language learning</h3>
                 <p className="text-blue-200/70 text-sm">Weekly tips, new feature drops, and learner success stories.</p>
               </div>
-              <form className="footer-newsletter-form" onSubmit={e => e.preventDefault()}>
+              <form className="footer-newsletter-form" onSubmit={handleSubscribe}>
                 <div className="footer-newsletter-input-wrap">
                   <Mail className="footer-newsletter-icon" />
                   <input
                     type="email"
+                    value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    disabled={isSubscribing}
                     placeholder="Enter your email"
                     className="footer-newsletter-input"
                     aria-label="Email for newsletter"
+                    required
                   />
                 </div>
-                <button type="submit" className="footer-newsletter-btn">
-                  Subscribe <ArrowRight className="w-4 h-4" />
+                <button 
+                  type="submit" 
+                  disabled={isSubscribing}
+                  className="footer-newsletter-btn disabled:opacity-75"
+                >
+                  {isSubscribing ? 'Subscribing...' : 'Subscribe'} <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
             </div>
@@ -145,6 +175,8 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
                   <a
                     key={label}
                     href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     aria-label={label}
                     className="footer-social-btn group"
                     style={{ '--social-color': color } as React.CSSProperties}
@@ -187,11 +219,11 @@ const PublicLayout: React.FC<PublicLayoutProps> = ({ children }) => {
                 <span>for language learners worldwide</span>
               </div>
               <div className="flex items-center gap-4 text-xs text-slate-500">
-                <a href="#" className="hover:text-white transition-colors">Privacy</a>
+                <Link to={ROUTES.PRIVACY} className="hover:text-white transition-colors">Privacy</Link>
                 <span className="w-px h-3 bg-slate-700" />
-                <a href="#" className="hover:text-white transition-colors">Terms</a>
+                <Link to={ROUTES.TERMS} className="hover:text-white transition-colors">Terms</Link>
                 <span className="w-px h-3 bg-slate-700" />
-                <a href="#" className="hover:text-white transition-colors">Cookies</a>
+                <Link to={ROUTES.COOKIES} className="hover:text-white transition-colors">Cookies</Link>
               </div>
             </div>
           </div>

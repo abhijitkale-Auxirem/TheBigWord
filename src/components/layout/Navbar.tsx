@@ -42,10 +42,10 @@ const Navbar: React.FC = () => {
   };
 
   const navLinks = [
-    { label: 'Courses', href: '/#courses' },
-    { label: 'Community', href: '/#community' },
-    { label: 'Pricing', href: '/#pricing' },
-    { label: 'Blog', href: ROUTES.BLOG },
+    { label: 'Courses',   href: ROUTES.COURSES },
+    { label: 'Community', href: ROUTES.COMMUNITY },
+    { label: 'Pricing',   href: ROUTES.PRICING },
+    { label: 'Blog',      href: ROUTES.BLOG },
   ];
 
   const isHome = location.pathname === '/';

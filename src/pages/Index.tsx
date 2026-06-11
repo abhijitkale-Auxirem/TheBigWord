@@ -1,23 +1,29 @@
 import { Navigate } from 'react-router-dom';
 import { useAuthContext } from '@/contexts/AuthContext';
+import FeedbackSpinner from '@/components/common/FeedbackSpinner';
 import { ROUTES } from '@/constants/routes';
-import { ROUTES as R } from '@/constants/routes';
+import Home from '@/pages/public/Home';
 
 const Index = () => {
-  const { isAuthenticated, user } = useAuthContext();
+  const { isAuthenticated, isLoading, user } = useAuthContext();
+
+  if (isLoading) {
+    return <FeedbackSpinner fullScreen label="Restoring your session..." />;
+  }
 
   if (!isAuthenticated) {
-    return <Navigate to={ROUTES.HOME} replace />;
+    return <Home />;
   }
 
   const roleMap: Record<string, string> = {
-    learner: R.LEARNER_DASHBOARD,
-    tutor: R.TUTOR_DASHBOARD,
-    corporate: R.CORPORATE_DASHBOARD,
-    admin: R.ADMIN_DASHBOARD,
+    learner: ROUTES.LEARNER_DASHBOARD,
+    tutor: ROUTES.TUTOR_DASHBOARD,
+    translator: ROUTES.TRANSLATOR_DASHBOARD,
+    corporate: ROUTES.CORPORATE_DASHBOARD,
+    admin: ROUTES.ADMIN_DASHBOARD,
   };
 
-  return <Navigate to={roleMap[user?.role || 'learner'] || R.LEARNER_DASHBOARD} replace />;
+  return <Navigate to={roleMap[user?.role || 'learner'] || ROUTES.LEARNER_DASHBOARD} replace />;
 };
 
 export default Index;
