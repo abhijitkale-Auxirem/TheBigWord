@@ -8,7 +8,8 @@ import {
   Globe, BookOpen, Mic, FileText, Users,
   Star, ArrowRight, CheckCircle, Zap, Brain,
   Languages, GraduationCap, Building2, ChevronRight, Play,
-  Shield, Clock, Award, Sparkles, Target, Heart, Rocket
+  Shield, Clock, Award, Sparkles, Target, Heart, Rocket,
+  Newspaper, TrendingUp, MessageCircle, Info, DollarSign, Briefcase
 } from 'lucide-react';
 
 
@@ -223,6 +224,7 @@ const Home: React.FC = () => {
   const langReveal = useReveal();
   const pricingReveal = useReveal();
   const trustReveal = useReveal();
+  const exploreReveal = useReveal();
 
   return (
     <PublicLayout>
@@ -712,7 +714,158 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══ 10. FINAL CTA ════════════════════════════════════════════ */}
+      {/* ═══ 10. EXPLORE PAGES ═══════════════════════════════════════ */}
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="section-blob blob-1" style={{ opacity: 0.4 }} />
+        <div ref={exploreReveal.ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className={`text-center mb-16 transition-all duration-700 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            <SectionLabel>Explore TheBigWord</SectionLabel>
+            <h2 className="font-heading font-bold text-4xl lg:text-5xl mt-4 mb-4">
+              Everything You Need,<br />
+              <span className="text-gradient">All in One Place</span>
+            </h2>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              Dive deeper into our platform. From expert articles to world-class courses — explore what TheBigWord has to offer.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Blog Card */}
+            <Link
+              to={ROUTES.BLOG}
+              className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '0ms' }}
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-blue-500 to-indigo-600" />
+              <div className="p-7 flex flex-col flex-1">
+                <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-5">
+                  <Newspaper className="w-6 h-6 text-blue-600" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-2 group-hover:text-blue-600 transition-colors">Blog & Articles</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+                  Stay up-to-date with language learning tips, success stories, AI updates, and expert guides written by certified linguists.
+                </p>
+                <div className="flex items-center gap-1.5 mt-6 text-sm font-semibold text-blue-600">
+                  <span>Read Articles</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Courses Card */}
+            <Link
+              to={ROUTES.COURSES}
+              className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '80ms' }}
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-emerald-500 to-teal-600" />
+              <div className="p-7 flex flex-col flex-1">
+                <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-5">
+                  <BookOpen className="w-6 h-6 text-emerald-600" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-2 group-hover:text-emerald-600 transition-colors">Courses Catalog</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+                  Browse structured language courses from A1 to C2 — designed by certified educators and powered by adaptive AI.
+                </p>
+                <div className="flex items-center gap-1.5 mt-6 text-sm font-semibold text-emerald-600">
+                  <span>Browse Courses</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Community Card */}
+            <Link
+              to={ROUTES.COMMUNITY}
+              className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '160ms' }}
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-violet-500 to-purple-700" />
+              <div className="p-7 flex flex-col flex-1">
+                <div className="w-12 h-12 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center mb-5">
+                  <MessageCircle className="w-6 h-6 text-violet-600" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-2 group-hover:text-violet-600 transition-colors">Community Hub</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+                  Connect with 500K+ learners worldwide. Share your journey, find language exchange partners, and join live events.
+                </p>
+                <div className="flex items-center gap-1.5 mt-6 text-sm font-semibold text-violet-600">
+                  <span>Join Community</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Pricing Card */}
+            <Link
+              to={ROUTES.PRICING}
+              className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '240ms' }}
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-amber-500 to-orange-600" />
+              <div className="p-7 flex flex-col flex-1">
+                <div className="w-12 h-12 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center mb-5">
+                  <DollarSign className="w-6 h-6 text-amber-600" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-2 group-hover:text-amber-600 transition-colors">Pricing Plans</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+                  From a free plan to enterprise solutions — see all our transparent pricing options with no hidden fees or commitments.
+                </p>
+                <div className="flex items-center gap-1.5 mt-6 text-sm font-semibold text-amber-600">
+                  <span>View Pricing</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
+            {/* About Card */}
+            <Link
+              to={ROUTES.ABOUT}
+              className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '320ms' }}
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-rose-500 to-pink-600" />
+              <div className="p-7 flex flex-col flex-1">
+                <div className="w-12 h-12 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center mb-5">
+                  <Info className="w-6 h-6 text-rose-600" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-2 group-hover:text-rose-600 transition-colors">About Us</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+                  Learn about our mission, the team behind TheBigWord, our core values, and why half a million learners trust us.
+                </p>
+                <div className="flex items-center gap-1.5 mt-6 text-sm font-semibold text-rose-600">
+                  <span>Our Story</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Careers Card */}
+            <Link
+              to={ROUTES.CAREERS}
+              className={`group relative flex flex-col rounded-3xl border border-slate-200 bg-white overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-500 ${exploreReveal.visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+              style={{ transitionDelay: '400ms' }}
+            >
+              <div className="h-2 w-full bg-gradient-to-r from-cyan-500 to-sky-600" />
+              <div className="p-7 flex flex-col flex-1">
+                <div className="w-12 h-12 rounded-xl bg-cyan-50 border border-cyan-100 flex items-center justify-center mb-5">
+                  <Briefcase className="w-6 h-6 text-cyan-600" />
+                </div>
+                <h3 className="font-heading font-bold text-xl mb-2 group-hover:text-cyan-600 transition-colors">Careers</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed flex-1">
+                  Join our remote-first team of linguists, AI engineers, and educators. Help shape the future of language learning.
+                </p>
+                <div className="flex items-center gap-1.5 mt-6 text-sm font-semibold text-cyan-600">
+                  <span>See Open Roles</span>
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ 11. FINAL CTA ════════════════════════════════════════════ */}
       <section className="py-24 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
           <div className="cta-final-card">

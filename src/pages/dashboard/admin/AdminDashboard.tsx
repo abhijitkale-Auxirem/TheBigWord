@@ -1,7 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '@/layouts/DashboardLayout';
-import { Users, BookOpen, DollarSign, TrendingUp, Globe, Shield, Flag, Activity, ChevronRight, AlertCircle, CheckCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Users, BookOpen, DollarSign, TrendingUp, Globe, Shield, Activity, ChevronRight, AlertCircle, CheckCircle } from 'lucide-react';
+import { ROUTES } from '@/constants/routes';
 
 const PLATFORM_STATS = [
   { icon: <Users className="w-5 h-5 text-blue-500" />, label: 'Total Users', value: '524,381', change: '+2.4%', bg: 'bg-blue-50' },
@@ -71,9 +72,9 @@ const AdminDashboard: React.FC = () => {
         <div className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-heading font-semibold text-lg">Recent Registrations</h3>
-            <button className="text-sm text-primary font-medium flex items-center gap-1">
+            <Link to={ROUTES.ADMIN_USERS} className="text-sm text-primary font-medium flex items-center gap-1">
               Manage Users <ChevronRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
           <div className="bg-white rounded-2xl border border-border overflow-hidden">
             <table className="w-full">
